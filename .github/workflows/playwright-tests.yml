@@ -77,7 +77,7 @@ jobs:
         CI: true
         BROWSER: ${{ matrix.browser }}
       run: |
-        python -m pytest tests/ui/ -v --tb=short
+        python -m pytest tests/ui/ -v --tb=short --alluredir=allure-results
         
     - name: Create environment properties
       if: always()

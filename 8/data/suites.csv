@@ -1,0 +1,17 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"Test 1: Dashboard page loads successfully","7845","test_dashboard_page_loads","tests.ui","Tue Feb 10 21:13:48 UTC 2026","passed","Tue Feb 10 21:13:56 UTC 2026","TestDashboardUI","test_dashboard","",""
+"Test 3: Clicking Scan button updates the invoice table","5138","test_scan_erp_next_updates_table","tests.ui","Tue Feb 10 21:14:25 UTC 2026","passed","Tue Feb 10 21:14:30 UTC 2026","TestDashboardUI","test_dashboard","",""
+"Test 5: Risk level filter filters invoices","11806","test_risk_filter_works","tests.ui","Tue Feb 10 21:14:04 UTC 2026","passed","Tue Feb 10 21:14:16 UTC 2026","TestDashboardUI","test_dashboard","",""
+"Test 2: Scan button is visible on dashboard","9732","test_scan_button_exists","tests.ui","Tue Feb 10 21:14:16 UTC 2026","passed","Tue Feb 10 21:14:25 UTC 2026","TestDashboardUI","test_dashboard","",""
+"
+        תרחיש: מנהל בוחן חשבוניות HIGH RISK
+        ","5973","test_manager_reviews_high_risk_invoices","tests.ui","Tue Feb 10 21:15:33 UTC 2026","passed","Tue Feb 10 21:15:39 UTC 2026","TestDashboardUserJourney","test_dashboard","",""
+"Test 7: Table displays invoice information correctly using component composition","10915","test_table_displays_invoice_data","tests.ui","Tue Feb 10 21:15:14 UTC 2026","skipped","Tue Feb 10 21:15:24 UTC 2026","TestDashboardUI","test_dashboard","",""
+"Test 4: Search filter filters invoices by customer name","14903","test_search_filter_works","tests.ui","Tue Feb 10 21:14:30 UTC 2026","skipped","Tue Feb 10 21:14:45 UTC 2026","TestDashboardUI","test_dashboard","",""
+"Test 6: Statistics cards display data","5229","test_stats_display_correctly","tests.ui","Tue Feb 10 21:15:08 UTC 2026","passed","Tue Feb 10 21:15:14 UTC 2026","TestDashboardUI","test_dashboard","",""
+"
+        מסע משתמש מלא: סריקה, חיפוש, ושליחת התראה
+        ","8428","test_complete_user_journey_scan_and_notify","tests.ui","Tue Feb 10 21:15:25 UTC 2026","passed","Tue Feb 10 21:15:33 UTC 2026","TestDashboardUserJourney","test_dashboard","",""
+"Test 10: Page chaining - fluent interface (מסע משתמש)","7932","test_page_chaining_example","tests.ui","Tue Feb 10 21:13:56 UTC 2026","passed","Tue Feb 10 21:14:04 UTC 2026","TestDashboardUI","test_dashboard","",""
+"Test 9: Send Email button exists for invoices","13430","test_send_email_button_exists_for_invoices","tests.ui","Tue Feb 10 21:14:45 UTC 2026","skipped","Tue Feb 10 21:14:59 UTC 2026","TestDashboardUI","test_dashboard","",""
+"Test 8: Send SMS button exists for invoices","9461","test_send_sms_button_exists_for_invoices","tests.ui","Tue Feb 10 21:14:59 UTC 2026","skipped","Tue Feb 10 21:15:08 UTC 2026","TestDashboardUI","test_dashboard","",""

@@ -16,11 +16,17 @@ class InvoiceRow:
     
     def get_invoice_id(self) -> str:
         """Get invoice ID from this row"""
-        return self.element.locator("td:nth-child(1)").inner_text()
+        try:
+            return self.element.locator("td:nth-child(1)").inner_text(timeout=2000)
+        except Exception:
+            return ""
     
     def get_customer_name(self) -> str:
         """Get customer name from this row"""
-        return self.element.locator("td:nth-child(2)").inner_text()
+        try:
+            return self.element.locator("td:nth-child(2)").inner_text(timeout=2000)
+        except Exception:
+            return ""
     
     def get_days_overdue(self) -> int:
         """Get days overdue from this row"""

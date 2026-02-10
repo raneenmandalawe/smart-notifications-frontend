@@ -72,6 +72,7 @@ jobs:
     - name: Run UI tests with pytest
       env:
         NGROK_URL: ${{ inputs.ngrok_url || secrets.NGROK_URL }}
+        FRONTEND_URL: ${{ inputs.ngrok_url || secrets.NGROK_URL }}
         HEADLESS: true
         CI: true
         BROWSER: ${{ matrix.browser }}

@@ -40,7 +40,12 @@ class TestDashboardUI(unittest.TestCase):
     
     def setUp(self):
         """Set up before each test - create new page and dashboard"""
-        self.context: BrowserContext = self.browser.new_context()
+        extra_headers = {}
+        if os.getenv("NGROK_URL"):
+            extra_headers["ngrok-skip-browser-warning"] = "1"
+        self.context: BrowserContext = self.browser.new_context(
+            extra_http_headers=extra_headers
+        )
         self.page: Page = self.context.new_page()
         self.dashboard = DashboardPage(self.page, self.base_url)
     
@@ -225,7 +230,12 @@ class TestDashboardUserJourney(unittest.TestCase):
     
     def setUp(self):
         """Create new context and page"""
-        self.context = self.browser.new_context()
+        extra_headers = {}
+        if os.getenv("NGROK_URL"):
+            extra_headers["ngrok-skip-browser-warning"] = "1"
+        self.context = self.browser.new_context(
+            extra_http_headers=extra_headers
+        )
         self.page = self.context.new_page()
         self.dashboard = DashboardPage(self.page, self.base_url)
     

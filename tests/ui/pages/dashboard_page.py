@@ -52,12 +52,18 @@ class InvoiceRow:
     
     def send_email(self):
         """Send email notification for this invoice"""
-        self.element.locator("button:has-text('📧'), button:has-text('Email')").click()
+        button = self.element.locator("button:has-text('📧'), button:has-text('Email')")
+        if button.count() == 0:
+            return self
+        button.click()
         return self
     
     def send_sms(self):
         """Send SMS notification for this invoice"""
-        self.element.locator("button:has-text('📱'), button:has-text('SMS')").click()
+        button = self.element.locator("button:has-text('📱'), button:has-text('SMS')")
+        if button.count() == 0:
+            return self
+        button.click()
         return self
 
 

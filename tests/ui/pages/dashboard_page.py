@@ -124,6 +124,7 @@ class DashboardPage(BasePage):
         """Navigate to Dashboard page (user service)"""
         self.navigate_to(self.dashboard_url)
         self.page.wait_for_load_state("networkidle")
+        self._verify_page_loaded()
         return self
     
     def scan_for_overdue_invoices(self):

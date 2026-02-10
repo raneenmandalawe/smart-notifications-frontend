@@ -10,7 +10,6 @@ class BasePage:
     
     def __init__(self, page: Page):
         self.page = page
-        self._verify_page_loaded()
     
     def _verify_page_loaded(self):
         """Override in subclass to verify page loaded correctly"""

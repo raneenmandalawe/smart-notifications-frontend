@@ -1,5 +1,7 @@
 # איך לראות את ה-UI Tests ב-GitHub CI/CD 🚀
 
+> 📖 **לפני שמתחילים**: קרא את [docs/NGROK_SETUP.md](./docs/NGROK_SETUP.md) להגדרת Ngrok והבנת איך הוא עובד
+
 ## שלב 1: העלאת הקוד ל-GitHub
 
 ```bash

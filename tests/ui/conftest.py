@@ -11,13 +11,16 @@ def browser_context_args(browser_context_args):
     """
     Configure browser context for all tests
     """
+    # Support both NGROK_URL (for CI) and FRONTEND_URL (for local)
+    base_url = os.getenv("NGROK_URL") or os.getenv("FRONTEND_URL", "http://localhost:3000")
+    
     return {
         **browser_context_args,
         "viewport": {
             "width": 1920,
             "height": 1080,
         },
-        "base_url": os.getenv("FRONTEND_URL", "http://localhost:3000"),
+        "base_url": base_url,
     }
 
 

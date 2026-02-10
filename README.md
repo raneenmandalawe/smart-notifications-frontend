@@ -75,3 +75,4 @@ PWDEBUG=1 pytest tests/ui/test_dashboard.py
 - `docs/E2E_TEST_PLAN.md`
 - `docs/CI_PIPELINE.md`
 - `docs/ALLURE.md`
+- **`docs/NGROK_SETUP.md`** - הגדרת Ngrok להרצת טסטים ב-CI

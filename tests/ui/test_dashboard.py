@@ -19,8 +19,18 @@ class TestDashboardUI(unittest.TestCase):
         cls.playwright = sync_playwright().start()
         # Launch browser in headless mode for CI, or headless=False to see the browser
         headless = os.getenv("HEADLESS", "true").lower() == "true"
-        cls.browser: Browser = cls.playwright.chromium.launch(headless=headless, slow_mo=100)
-        cls.base_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+        browser_name = os.getenv("BROWSER", "chromium").lower()
+        
+        # Select browser based on environment variable
+        if browser_name == "firefox":
+            cls.browser: Browser = cls.playwright.firefox.launch(headless=headless, slow_mo=100)
+        elif browser_name == "webkit":
+            cls.browser: Browser = cls.playwright.webkit.launch(headless=headless, slow_mo=100)
+        else:  # chromium is default
+            cls.browser: Browser = cls.playwright.chromium.launch(headless=headless, slow_mo=100)
+        
+        # Support both NGROK_URL (for CI) and FRONTEND_URL (for local)
+        cls.base_url = os.getenv("NGROK_URL") or os.getenv("FRONTEND_URL", "http://localhost:3000")
     
     @classmethod
     def tearDownClass(cls):
@@ -194,8 +204,18 @@ class TestDashboardUserJourney(unittest.TestCase):
         """Set up browser once"""
         cls.playwright = sync_playwright().start()
         headless = os.getenv("HEADLESS", "true").lower() == "true"
-        cls.browser = cls.playwright.chromium.launch(headless=headless, slow_mo=150)
-        cls.base_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+        browser_name = os.getenv("BROWSER", "chromium").lower()
+        
+        # Select browser based on environment variable
+        if browser_name == "firefox":
+            cls.browser = cls.playwright.firefox.launch(headless=headless, slow_mo=150)
+        elif browser_name == "webkit":
+            cls.browser = cls.playwright.webkit.launch(headless=headless, slow_mo=150)
+        else:  # chromium is default
+            cls.browser = cls.playwright.chromium.launch(headless=headless, slow_mo=150)
+        
+        # Support both NGROK_URL (for CI) and FRONTEND_URL (for local)
+        cls.base_url = os.getenv("NGROK_URL") or os.getenv("FRONTEND_URL", "http://localhost:3000")
     
     @classmethod
     def tearDownClass(cls):

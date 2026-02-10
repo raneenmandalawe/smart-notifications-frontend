@@ -37,19 +37,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: './package-lock.json'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Install Playwright browsers
-      run: npx playwright install --with-deps ${{ matrix.browser }}
-      
     - name: Validate NGROK_URL
       env:
         NGROK_URL: ${{ inputs.ngrok_url || secrets.NGROK_URL }}
@@ -68,12 +55,28 @@ jobs:
         fi
         echo "✅ $NGROK_URL is reachable (HTTP $HTTP_CODE)"
         
-    - name: Run Playwright tests
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-ui-tests.txt
+    
+    - name: Install Playwright browsers
+      run: |
+        playwright install --with-deps ${{ matrix.browser }}
+        
+    - name: Run UI tests with pytest
       env:
         NGROK_URL: ${{ inputs.ngrok_url || secrets.NGROK_URL }}
+        HEADLESS: true
         CI: true
+        BROWSER: ${{ matrix.browser }}
       run: |
-        npx playwright test --project=${{ matrix.browser }}-${{ matrix.viewport.name }}
+        python -m pytest tests/ui/ -v --tb=short
         
     - name: Create environment properties
       if: always()
@@ -81,10 +84,21 @@ jobs:
         mkdir -p allure-results
         echo "Browser=${{ matrix.browser }}" >> allure-results/environment.properties
         echo "Viewport=${{ matrix.viewport.name }} (${{ matrix.viewport.width }}x${{ matrix.viewport.height }})" >> allure-results/environment.properties
-        echo "Node.Version=$(node --version)" >> allure-results/environment.properties
-        echo "Playwright.Version=$(npx playwright --version)" >> allure-results/environment.properties
+        echo "Python.Version=$(python --version)" >> allure-results/environment.properties
+        echo "Playwright.Version=$(playwright --version)" >> allure-results/environment.properties
         echo "Test.Execution.Date=$(date +'%Y-%m-%d %H:%M:%S')" >> allure-results/environment.properties
         echo "NGROK_URL=${{ inputs.ngrok_url || secrets.NGROK_URL }}" >> allure-results/environment.properties
+    
+    - name: Upload test screenshots
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-screenshots-${{ matrix.browser }}-${{ matrix.viewport.name }}
+        path: |
+          **/*.png
+          screenshots/
+        retention-days: 7
+        if-no-files-found: ignore
         
     - name: Upload Allure results
       if: always()
@@ -92,14 +106,6 @@ jobs:
       with:
         name: allure-results-${{ matrix.browser }}-${{ matrix.viewport.name }}
         path: allure-results
-        retention-days: 7
-        
-    - name: Upload Playwright report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: playwright-report-${{ matrix.browser }}-${{ matrix.viewport.name }}
-        path: playwright-report
         retention-days: 7
 
   generate-allure-report:

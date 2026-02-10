@@ -186,6 +186,7 @@ export default function DashboardPage() {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <button
+                data-testid="scan-button"
                 onClick={runScan}
                 className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-indigo-700 shadow-lg shadow-indigo-900/20 transition hover:-translate-y-0.5 hover:bg-indigo-50"
                 disabled={scanLoading}
@@ -209,10 +210,10 @@ export default function DashboardPage() {
 
       <div className="mx-auto w-full max-w-6xl px-6 py-8">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <KpiCard label="Overdue invoices" value={stats.total} />
-          <KpiCard label="High‑risk" value={stats.high_risk} accent="HIGH" />
-          <KpiCard label="Notifications sent" value={stats.sent_today} />
-          <KpiCard label="Failed" value={stats.failed} accent="FAILED" />
+          <KpiCard testId="kpi-total" label="Overdue invoices" value={stats.total} />
+          <KpiCard testId="kpi-high-risk" label="High‑risk" value={stats.high_risk} accent="HIGH" />
+          <KpiCard testId="kpi-sent-today" label="Notifications sent" value={stats.sent_today} />
+          <KpiCard testId="kpi-failed" label="Failed" value={stats.failed} accent="FAILED" />
         </div>
 
         <div className="mt-8 rounded-2xl border border-white/10 bg-zinc-900/70 p-6 shadow-xl shadow-black/40">
@@ -245,6 +246,7 @@ export default function DashboardPage() {
             <label className="flex flex-col gap-2 text-sm text-zinc-300">
               Risk level
               <select
+                data-testid="risk-filter"
                 value={risk}
                 onChange={(event) =>
                   setRisk(event.target.value as "ALL" | DashboardItem["risk_level"])
@@ -277,7 +279,7 @@ export default function DashboardPage() {
             </label>
           </div>
 
-          <div className="mt-6 hidden overflow-hidden rounded-2xl border border-white/10 lg:block">
+          <div className="mt-6 hidden overflow-hidden rounded-2xl border border-white/10 lg:block" data-testid="overdue-table">
             <table className="w-full text-left text-sm text-zinc-300">
               <thead className="bg-white/5 text-xs uppercase text-zinc-400">
                 <tr>
@@ -321,6 +323,7 @@ export default function DashboardPage() {
                       <td className="px-4 py-3">{item.history_count}</td>
                       <td className="px-4 py-3">
                         <span
+                          data-testid={`risk-badge-${item.risk_level.toLowerCase()}`}
                           className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
                             riskBadgeStyles[item.risk_level]
                           }`}
@@ -400,6 +403,7 @@ export default function DashboardPage() {
                       <p className="text-xs text-zinc-400">{item.customer}</p>
                     </div>
                     <span
+                      data-testid={`risk-badge-${item.risk_level.toLowerCase()}`}
                       className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
                         riskBadgeStyles[item.risk_level]
                       }`}
@@ -476,10 +480,12 @@ export default function DashboardPage() {
 }
 
 function KpiCard({
+  testId,
   label,
   value,
   accent,
 }: {
+  testId?: string;
   label: string;
   value: number;
   accent?: "HIGH" | "FAILED";
@@ -493,6 +499,7 @@ function KpiCard({
 
   return (
     <div
+      data-testid={testId}
       className={`rounded-2xl border px-5 py-4 shadow-lg shadow-black/30 ${accentStyles}`}
     >
       <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">

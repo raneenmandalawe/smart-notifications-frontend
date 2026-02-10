@@ -1,0 +1,6 @@
+# UI Testing Dependencies (Python + Playwright)
+playwright==1.48.0
+pytest==8.3.4
+pytest-playwright==0.6.2
+pytest-html==4.1.1
+allure-pytest==2.13.5

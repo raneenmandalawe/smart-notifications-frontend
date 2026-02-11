@@ -46,3 +46,5 @@ next-env.d.ts
 /playwright/.cache/
 /allure-results/
 /allure-report/
+__pycache__/
+*.pyc

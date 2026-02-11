@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Smart Notifications Frontend
 
-## Getting Started
+Next.js dashboard for overdue invoice intelligence. The UI consumes real backend data, which is sourced from ERPNext (no mock mode).
 
-First, run the development server:
+## Requirements
+- Node.js 18+
+- Python 3.9+ (for UI tests)
+- Backend running and reachable
 
+## Setup
+1. Install dependencies:
+	- `npm install`
+2. Configure API base:
+	- `.env.local` → `NEXT_PUBLIC_API_BASE=http://127.0.0.1:8091`
+3. Install Python UI testing dependencies:
+	- `cd .. && source .venv/bin/activate`
+	- `pip install -r smart-notifications-frontend/requirements-ui-tests.txt`
+	- `playwright install chromium`
+
+## Run
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev -- --port 3001
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3001/dashboard
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## UI Testing with Python + Playwright (POM)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+UI tests בפייתון עם Page Object Model pattern.
 
-## Learn More
+### Quick Start
+```bash
+# Activate virtual environment
+cd /Users/raneenmandalawi/Desktop/smart-notifications-erpnext
+source .venv/bin/activate
 
-To learn more about Next.js, take a look at the following resources:
+# Run all UI tests
+cd smart-notifications-frontend
+npm run test:ui
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Run with browser visible
+npm run test:ui:headed
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Run with slow motion for debugging
+npm run test:ui:slow
 
-## Deploy on Vercel
+# Or run directly with pytest
+pytest tests/ui/ -v
+HEADLESS=false pytest tests/ui/ -v
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Manual Pytest Commands
+```bash
+# Activate environment first
+source ../.venv/bin/activate
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Run all tests
+python -m pytest tests/ui/ -v
+
+# Run specific test class
+python -m pytest tests/ui/test_dashboard.py::TestDashboardUI -v
+
+# Run single test
+python -m pytest tests/ui/test_dashboard.py::TestDashboardUI::test_dashboard_page_loads -v
+
+# Debug mode with Playwright inspector
+PWDEBUG=1 pytest tests/ui/test_dashboard.py
+```
+
+📖 **Full UI testing guide:** See [tests/ui/README.md](./tests/ui/README.md)
+
+## Documentation
+- `docs/UI_FLOWS.md`
+- `docs/COMPONENT_TEST_PLAN.md`
+- `docs/E2E_TEST_PLAN.md`
+- `docs/CI_PIPELINE.md`
+- `docs/ALLURE.md`
+- **`docs/NGROK_SETUP.md`** - הגדרת Ngrok להרצת טסטים ב-CI

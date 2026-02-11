@@ -1,0 +1,7 @@
+# UI Testing Dependencies (Python + Playwright)
+# Updated for Python 3.14 compatibility
+playwright==1.58.0
+pytest==9.0.2
+pytest-playwright==0.7.2
+pytest-html==4.2.0
+allure-pytest==2.15.3

@@ -1,0 +1,138 @@
+name: Playwright E2E Tests with Allure
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      ngrok_url:
+        description: 'Ngrok URL (e.g., https://your-domain.ngrok-free.app)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  pull-requests: write
+  checks: write
+
+jobs:
+  playwright-tests:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        browser: [chromium, firefox]
+        viewport: 
+          - { name: 'desktop', width: 1920, height: 1080 }
+          - { name: 'tablet', width: 768, height: 1024 }
+          - { name: 'mobile', width: 375, height: 667 }
+      fail-fast: false
+    
+    name: Test ${{ matrix.browser }} - ${{ matrix.viewport.name }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Validate NGROK_URL
+      env:
+        NGROK_URL: ${{ inputs.ngrok_url || secrets.NGROK_URL }}
+      run: |
+        if [ -z "$NGROK_URL" ]; then
+          echo "❌ NGROK_URL is not set"
+          exit 1
+        fi
+        echo "✅ NGROK_URL is set: $NGROK_URL"
+        
+        # Test if URL is reachable
+        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$NGROK_URL" || echo "000")
+        if [ "$HTTP_CODE" = "000" ]; then
+          echo "❌ Cannot reach $NGROK_URL"
+          exit 1
+        fi
+        echo "✅ $NGROK_URL is reachable (HTTP $HTTP_CODE)"
+        
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-ui-tests.txt
+    
+    - name: Install Playwright browsers
+      run: |
+        playwright install --with-deps ${{ matrix.browser }}
+        
+    - name: Run UI tests with pytest
+      env:
+        NGROK_URL: ${{ inputs.ngrok_url || secrets.NGROK_URL }}
+        FRONTEND_URL: ${{ inputs.ngrok_url || secrets.NGROK_URL }}
+        HEADLESS: true
+        CI: true
+        BROWSER: ${{ matrix.browser }}
+      run: |
+        python -m pytest tests/ui/ -v --tb=short --alluredir=allure-results
+        
+    - name: Create environment properties
+      if: always()
+      run: |
+        mkdir -p allure-results
+        echo "Browser=${{ matrix.browser }}" >> allure-results/environment.properties
+        echo "Viewport=${{ matrix.viewport.name }} (${{ matrix.viewport.width }}x${{ matrix.viewport.height }})" >> allure-results/environment.properties
+        echo "Python.Version=$(python --version)" >> allure-results/environment.properties
+        echo "Playwright.Version=$(playwright --version)" >> allure-results/environment.properties
+        echo "Test.Execution.Date=$(date +'%Y-%m-%d %H:%M:%S')" >> allure-results/environment.properties
+        echo "NGROK_URL=${{ inputs.ngrok_url || secrets.NGROK_URL }}" >> allure-results/environment.properties
+    
+    - name: Upload test screenshots
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-screenshots-${{ matrix.browser }}-${{ matrix.viewport.name }}
+        path: |
+          **/*.png
+          screenshots/
+        retention-days: 7
+        if-no-files-found: ignore
+        
+    - name: Upload Allure results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: allure-results-${{ matrix.browser }}-${{ matrix.viewport.name }}
+        path: allure-results
+        retention-days: 7
+
+  generate-allure-report:
+    needs: playwright-tests
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Download all Allure results
+      uses: actions/download-artifact@v4
+      with:
+        path: allure-results-all
+        pattern: allure-results-*
+        merge-multiple: true
+        
+    - name: Generate Allure Report
+      uses: simple-elf/allure-report-action@master
+      with:
+        allure_results: allure-results-all
+        allure_history: allure-history
+        keep_reports: 20
+        
+    - name: Publish Allure Report to GitHub Pages
+      if: always()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: allure-history

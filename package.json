@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:ui": "cd .. && source .venv/bin/activate && cd smart-notifications-frontend && python -m pytest tests/ui/ -v",
+    "test:ui:headed": "cd .. && source .venv/bin/activate && cd smart-notifications-frontend && HEADLESS=false python -m pytest tests/ui/ -v",
+    "test:ui:slow": "cd .. && source .venv/bin/activate && cd smart-notifications-frontend && HEADLESS=false SLOW_MO=true python -m pytest tests/ui/ -v"
   },
   "dependencies": {
     "next": "16.1.6",
@@ -14,10 +17,12 @@
     "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.51.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "allure-playwright": "^3.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
